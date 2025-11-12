@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(pkill:*)",
+      "Bash(mkdir:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(node test-upload.mjs:*)",
+      "Bash(curl:*)",
+      "Bash(/tmp/test.txt)",
+      "Bash(lsof:*)",
+      "Bash(npx tsc:*)",
+      "Bash(if [ -f .env.local ])",
+      "Bash(then grep -E \"DATABASE_URL|OPENAI_API_KEY\" .env.local)",
+      "Bash(else echo \"No .env.local file found\")",
+      "Bash(fi)",
+      "Bash(psql:*)",
+      "Bash(NODE_OPTIONS='--loader ts-node/esm' npx ts-node:*)",
+      "Bash(node:*)",
+      "Bash(npx tsx:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

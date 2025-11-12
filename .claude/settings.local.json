@@ -21,7 +21,9 @@
       "Bash(psql:*)",
       "Bash(NODE_OPTIONS='--loader ts-node/esm' npx ts-node:*)",
       "Bash(node:*)",
-      "Bash(npx tsx:*)"
+      "Bash(npx tsx:*)",
+      "Bash(tree:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

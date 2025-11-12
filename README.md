@@ -1,164 +1,354 @@
 # Tax Lien RAG Assistant
 
-An intelligent research assistant powered by RAG (Retrieval Augmented Generation) to help you find and understand tax lien information quickly and accurately.
+An intelligent research assistant powered by RAG (Retrieval-Augmented Generation) to help you find and understand Colorado tax lien information quickly and accurately.
+
+![Next.js](https://img.shields.io/badge/Next.js-15-black) ![React](https://img.shields.io/badge/React-19-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Tailwind](https://img.shields.io/badge/Tailwind-3-cyan)
 
 ## Features
 
-- **Document Upload & Processing**: Upload tax lien documents and process them into a searchable knowledge base
-- **Vector Search**: Uses pgvector for efficient similarity search across document embeddings
-- **AI-Powered Chat**: Get accurate answers based on your documents using GPT-4
-- **PostgreSQL Backend**: Reliable data storage with vector similarity capabilities
+### 📤 Document Upload & Processing
+- **Drag-and-drop interface** - Easy file upload with visual feedback
+- **Markdown support** - Upload .md files with tax lien documentation
+- **Metadata management** - Tag documents with county, title, and year
+- **Document preview** - See headers and content before uploading
+- **File validation** - Automatic size and format checking
+- **Document library** - View, filter, and manage uploaded documents
+
+### 🔍 Intelligent Vector Search
+- **Semantic search** - Find relevant information using meaning, not just keywords
+- **pgvector integration** - Fast similarity search with PostgreSQL
+- **County filtering** - Search within specific county documents
+- **Relevance scoring** - Results ranked by similarity
+
+### 💬 AI-Powered Chat Interface
+- **Natural language queries** - Ask questions in plain English
+- **Streaming responses** - Real-time answer generation
+- **Source citations** - Every answer includes document references
+- **Context-aware** - Answers based only on your uploaded documents
+- **GPT-4o-mini powered** - Fast, accurate, and cost-effective
+
+### 🎨 Modern UI/UX
+- **Responsive design** - Works on desktop, tablet, and mobile
+- **shadcn/ui components** - Beautiful, accessible components
+- **Dark mode ready** - Color system supports dark theme
+- **Smooth animations** - Polished interactions and transitions
+- **Loading states** - Clear feedback during operations
 
 ## Tech Stack
 
-- **Frontend**: Next.js 15 with App Router, React 19, TypeScript
-- **Styling**: Tailwind CSS v3 (stable), shadcn/ui
-- **Database**: PostgreSQL with pgvector extension
-- **AI/ML**: OpenAI API, LangChain
-- **RAG**: Custom implementation using LangChain and pgvector
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | Next.js 15, React 19, TypeScript |
+| **Styling** | Tailwind CSS v3, shadcn/ui |
+| **Database** | PostgreSQL with pgvector extension |
+| **Vector Store** | pgvector for embeddings |
+| **AI/ML** | OpenAI API (text-embedding-3-small, GPT-4o-mini) |
+| **Hosting** | Railway-ready (or any Node.js host) |
 
-> **Note**: We're using Tailwind CSS v3 instead of v4 because v4 is still in beta and has compatibility issues with Next.js 15.5.6. See [TAILWIND_STATUS.md](TAILWIND_STATUS.md) for details.
+## Quick Start
 
-## Prerequisites
+### Prerequisites
 
-Before running this application, you need:
+- Node.js 18+
+- PostgreSQL with pgvector extension (recommended: [Neon](https://neon.tech))
+- OpenAI API key
 
-1. **Node.js** 18+ installed
-2. **PostgreSQL** with **pgvector extension** installed
-   - You can use a managed PostgreSQL service like:
-     - [Neon](https://neon.tech) (includes pgvector)
-     - [Supabase](https://supabase.com) (includes pgvector)
-     - [Railway](https://railway.app) (requires manual pgvector installation)
-   - Or install locally with pgvector extension
-3. **OpenAI API Key** for embeddings and chat completion
+### Installation
 
-## Setup Instructions
+1. **Clone the repository**
+```bash
+git clone <repository-url>
+cd YT-rag-tutorial
+```
 
-### 1. Install Dependencies
-
+2. **Install dependencies**
 ```bash
 npm install
 ```
 
-### 2. Database Setup
-
-Create a PostgreSQL database with pgvector extension enabled. Then run the schema:
-
-```bash
-# Connect to your database and run:
-psql -d your_database_url -f lib/db/schema.sql
-```
-
-Or manually execute the SQL in `lib/db/schema.sql` in your PostgreSQL client.
-
-### 3. Environment Variables
-
-Copy `.env.example` to `.env` and fill in your credentials:
-
+3. **Set up environment variables**
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env`:
-
+Edit `.env` and add your credentials:
 ```env
-OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_API_KEY=sk-your-openai-api-key-here
 DATABASE_URL=postgresql://user:password@host:port/database
 ```
 
-### 4. Run Development Server
+4. **Initialize the database**
+```bash
+psql $DATABASE_URL -f lib/db/schema.sql
+```
 
+5. **Start the development server**
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+6. **Open in browser**
+```
+http://localhost:3000
+```
+
+See [docs/SETUP.md](docs/SETUP.md) for detailed setup instructions.
 
 ## Project Structure
 
 ```
 tax-lien-rag/
-├── app/                    # Next.js App Router pages
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Home page
-│   ├── upload/            # Document upload page
-│   └── chat/              # Chat interface page
-├── components/            # React components
-│   └── Navigation.tsx     # Navigation header
-├── lib/                   # Utilities and core logic
-│   ├── db/               # Database related code
-│   │   ├── client.ts     # PostgreSQL connection pool
-│   │   └── schema.sql    # Database schema with pgvector
-│   └── utils.ts          # Utility functions
-├── .env.example          # Environment variables template
-└── README.md            # This file
+├── app/                      # Next.js App Router
+│   ├── api/                 # API routes
+│   │   ├── chat/           # Chat endpoint (RAG pipeline)
+│   │   ├── documents/      # Document CRUD operations
+│   │   ├── init-db/        # Database initialization
+│   │   └── upload/         # File upload processing
+│   ├── chat/               # Chat interface page
+│   ├── upload/             # Upload interface page
+│   ├── layout.tsx          # Root layout with navigation
+│   ├── page.tsx            # Home/landing page
+│   └── globals.css         # Global styles + Tailwind
+├── components/             # React components
+│   ├── ui/                 # shadcn/ui components
+│   ├── document-upload.tsx # Upload form component
+│   └── document-list.tsx   # Document management grid
+├── lib/                    # Core utilities
+│   ├── db/                 # Database utilities
+│   │   ├── client.ts       # PostgreSQL connection pool
+│   │   └── schema.sql      # Database schema
+│   ├── answer-generation.ts # LLM response generation
+│   ├── retrieval.ts        # Semantic search with pgvector
+│   ├── types.ts            # TypeScript interfaces
+│   └── utils.ts            # Helper functions
+├── docs/                   # Documentation
+│   ├── ARCHITECTURE.md     # System architecture
+│   ├── RAG-PIPELINE.md     # RAG implementation details
+│   ├── UPLOAD-FEATURE.md   # Upload feature docs
+│   ├── SETUP.md            # Setup instructions
+│   └── TAILWIND.md         # Styling guide
+└── sample-documents/       # Sample markdown files
 ```
 
-## Database Schema
+## How It Works
 
-The application uses a `document_chunks` table with the following structure:
+### 1. Document Upload
+```
+User uploads markdown file
+    ↓
+Parse and extract metadata
+    ↓
+Split into semantic chunks
+    ↓
+Generate embeddings (OpenAI)
+    ↓
+Store in PostgreSQL with pgvector
+```
 
-- `id`: Primary key
-- `document_name`: Name of the source document
-- `chunk_text`: Text content of the chunk
-- `chunk_index`: Position in the original document
-- `embedding`: Vector embedding (1536 dimensions for OpenAI ada-002)
-- `metadata`: Additional JSON metadata
-- `created_at`: Timestamp
-- `updated_at`: Timestamp
+### 2. Question Answering
+```
+User asks a question
+    ↓
+Generate query embedding
+    ↓
+Vector similarity search (pgvector)
+    ↓
+Retrieve top K relevant chunks
+    ↓
+Format context for LLM
+    ↓
+Generate answer (GPT-4o-mini)
+    ↓
+Stream response with citations
+```
 
-Vector similarity search is performed using pgvector's cosine distance operator.
+## Key Features Explained
 
-## PostgreSQL + pgvector Setup
+### Vector Search with pgvector
 
-### Option 1: Managed Services (Recommended)
+Uses PostgreSQL's pgvector extension for efficient similarity search:
+- **1536-dimensional embeddings** (OpenAI text-embedding-3-small)
+- **Cosine distance** for similarity measurement
+- **ivfflat index** for fast approximate nearest neighbor search
+- **County filtering** with combined vector + metadata queries
 
-**Neon** (Easiest):
-1. Create a free account at [neon.tech](https://neon.tech)
-2. Create a new project
-3. pgvector is pre-installed - just run the schema
-4. Copy the connection string to `.env`
+### RAG Pipeline
 
-**Supabase**:
-1. Create a project at [supabase.com](https://supabase.com)
-2. pgvector is pre-installed
-3. Run the schema in SQL Editor
-4. Use the connection string from Settings > Database
+Custom implementation following best practices:
+- **Semantic chunking** - Intelligent document splitting
+- **Retrieval** - Top K most relevant chunks (configurable)
+- **Context formatting** - Structured prompts for LLM
+- **Streaming responses** - Real-time answer generation
+- **Source attribution** - Transparent citations
 
-### Option 2: Railway
+### Upload System
 
-1. Create a PostgreSQL database on [railway.app](https://railway.app)
-2. Connect to the database
-3. Install pgvector extension manually
-4. Run the schema
+Full-featured document management:
+- **Drag-and-drop** - Intuitive file selection
+- **Metadata forms** - County, title, year tagging
+- **Preview** - See content and headers before upload
+- **Validation** - File type and size checking
+- **Grid view** - Browse and manage documents
+- **County filtering** - Filter by jurisdiction
+- **Delete protection** - Confirmation dialogs
 
-### Option 3: Local Installation
+## API Endpoints
 
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/upload` | Upload and process documents |
+| `POST` | `/api/chat` | Ask questions (RAG query) |
+| `GET` | `/api/documents` | List all documents |
+| `DELETE` | `/api/documents/:id` | Delete a document |
+| `POST` | `/api/init-db` | Initialize database schema |
+
+## Configuration
+
+### RAG Parameters
+
+Edit [lib/retrieval.ts](lib/retrieval.ts) to adjust:
+
+```typescript
+{
+  topK: 5,              // Number of chunks to retrieve
+  minDistance: 0.5,     // Similarity threshold (0-2)
+  county: undefined     // Optional county filter
+}
+```
+
+### LLM Settings
+
+Edit [lib/answer-generation.ts](lib/answer-generation.ts):
+
+```typescript
+{
+  model: 'gpt-4o-mini',   // OpenAI model
+  temperature: 0.1,        // Lower = more factual
+  max_tokens: 800          // Response length limit
+}
+```
+
+## Documentation
+
+Comprehensive documentation in the [docs/](docs/) folder:
+
+- **[SETUP.md](docs/SETUP.md)** - Installation and configuration
+- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System design and structure
+- **[RAG-PIPELINE.md](docs/RAG-PIPELINE.md)** - RAG implementation details
+- **[UPLOAD-FEATURE.md](docs/UPLOAD-FEATURE.md)** - Upload system documentation
+- **[TAILWIND.md](docs/TAILWIND.md)** - Styling and theming guide
+
+## Development
+
+### Run Development Server
 ```bash
-# macOS with Homebrew
-brew install postgresql pgvector
-
-# Start PostgreSQL
-brew services start postgresql
-
-# Create database
-createdb tax_lien_rag
-
-# Enable pgvector
-psql tax_lien_rag -c "CREATE EXTENSION vector;"
-
-# Run schema
-psql tax_lien_rag -f lib/db/schema.sql
+npm run dev
 ```
 
-## Next Steps
+### Build for Production
+```bash
+npm run build
+npm start
+```
 
-1. Implement document upload functionality
-2. Add document chunking and embedding generation
-3. Build the chat interface
-4. Add vector similarity search
-5. Implement RAG pipeline with LangChain
+### Run Tests
+```bash
+# Test RAG pipeline
+npx ts-node test-rag-pipeline.ts
+
+# Test chat API (requires dev server running)
+npx ts-node test-chat-api.ts
+```
+
+### Database Commands
+```bash
+# Initialize schema
+psql $DATABASE_URL -f lib/db/schema.sql
+
+# Check tables
+psql $DATABASE_URL -c "\dt"
+
+# View documents
+psql $DATABASE_URL -c "SELECT county, document_title FROM document_chunks GROUP BY county, document_title;"
+```
+
+## Sample Documents
+
+Test the app with included sample documents in [sample-documents/](sample-documents/):
+- `boulder-redemption-2025.md` - Boulder County redemption guidelines
+- `Clear_Creek_County_Tax_Lien_2025_FIXED.md` - Clear Creek County tax info
+
+## Deployment
+
+### Railway (Recommended)
+
+1. **Create Railway account** at [railway.app](https://railway.app)
+
+2. **Create new project**
+   - Click "New Project"
+   - Select "Deploy from GitHub repo"
+   - Choose your repository
+
+3. **Add PostgreSQL database**
+   - Click "New" → "Database" → "Add PostgreSQL"
+   - Railway automatically provisions database with pgvector support
+   - Connection string auto-populated in `DATABASE_URL`
+
+4. **Add environment variables**
+   - Go to your service → "Variables"
+   - Add `OPENAI_API_KEY`
+   - `DATABASE_URL` is already set by Railway
+
+5. **Initialize database**
+   - In Railway dashboard, open PostgreSQL
+   - Go to "Query" tab
+   - Run the schema from `lib/db/schema.sql`
+
+6. **Deploy!**
+   - Railway automatically deploys on push to main branch
+   - Your app will be live at `your-app.railway.app`
+
+### Other Platforms
+
+Works on any Node.js hosting:
+- Vercel (with external PostgreSQL)
+- Fly.io
+- Render
+- AWS/GCP/Azure
+
+Make sure to:
+- Set environment variables
+- Use production database with pgvector
+- Configure connection pooling
+
+## Roadmap
+
+- [ ] User authentication
+- [ ] Conversation history
+- [ ] Multi-file batch upload
+- [ ] Advanced search (hybrid vector + keyword)
+- [ ] Document preview modal
+- [ ] Export search results
+- [ ] Usage analytics
+- [ ] Dark mode toggle
 
 ## License
 
 MIT
+
+## Support
+
+For questions or issues:
+1. Check [docs/](docs/) folder
+2. Review error logs
+3. Verify environment variables
+4. Check database connection
+
+## Acknowledgments
+
+Built with:
+- [Next.js](https://nextjs.org)
+- [OpenAI](https://openai.com)
+- [pgvector](https://github.com/pgvector/pgvector)
+- [shadcn/ui](https://ui.shadcn.com)
+- [Tailwind CSS](https://tailwindcss.com)
